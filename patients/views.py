@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect, get_object_or_404
-from rest_framework import generics
-from .models import Patient
-from .serializers import PatientSerializer
+from rest_framework import generics, viewsets, parsers
+from .models import Patient, Content
+from .serializers import PatientSerializer, ContentSerializer
 from patient_activity.models import PatientActivityLog
 
 # Dashboard
@@ -86,3 +86,9 @@ class PatientRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     def perform_destroy(self, instance):
         PatientActivityLog.objects.create(action='deleted', patient=instance)
         instance.delete()
+
+# NEW: Content API
+class ContentViewSet(viewsets.ModelViewSet):
+    queryset = Content.objects.all()
+    serializer_class = ContentSerializer
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
