@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Maternal Health Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>Patient Actions Overview</h2>
+    <canvas id="actionsChart"></canvas>
+
+    <script>
+fetch('/api/patient-logs/')
+  .then(response => response.json())
+  .then(data => {
+      const counts = {
+          created: data.filter(log => log.action === 'created').length,
+          updated: data.filter(log => log.action === 'updated').length,
+          deleted: data.filter(log => log.action === 'deleted').length,
+      };
+
+      const ctx = document.getElementById('actionsChart').getContext('2d');
+      new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: ['Created', 'Updated', 'Deleted'],
+              datasets: [{
+                  label: 'Patient Actions',
+                  data: [counts.created, counts.updated, counts.deleted],
+                  backgroundColor: ['green', 'blue', 'red']
+              }]
+          }
+      });
+  });
+</script>
