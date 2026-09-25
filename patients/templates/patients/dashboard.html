@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Dashboard</h2>
+
+  {% if is_admin %}
+    <h3>Admin Tools</h3>
+    <ul>
+      <li>Manage users</li>
+      <li>View analytics</li>
+      <li>Edit patients</li>
+    </ul>
+
+  {% elif is_editor %}
+    <h3>Editor Tools</h3>
+    <ul>
+      <li>Add patient records</li>
+      <li>Update patient records</li>
+    </ul>
+
+  {% elif is_viewer %}
+    <h3>Viewer Dashboard</h3>
+    <ul>
+      <li>Read‑only access to patient data</li>
+    </ul>
+
+  {% else %}
+    <p>No group assigned — limited access.</p>
+  {% endif %}
+{% endblock %}
