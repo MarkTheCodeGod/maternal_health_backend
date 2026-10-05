@@ -1,0 +1,112 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-4a5b-8c9d-0123456789ab",
+    "name": "Maternal Health CMS - Milestone 29 API Collection",
+    "description": "Collection covering authentication, content upload/retrieval, filtering, language linkage, and permission-based deletion.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Authentication - Obtain JWT Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"user\",\n    \"password\": \"user123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/token/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "token", ""]
+        }
+      }
+    },
+    {
+      "name": "2. Content - Anonymous Request Refused (401)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/contents/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "contents", ""]
+        }
+      }
+    },
+    {
+      "name": "3. Content - Upload Multi-format (Text, Audio, Image)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "title", "value": "First Trimester Nutrition Guide", "type": "text" },
+            { "key": "stage", "value": "First Trimester", "type": "text" },
+            { "key": "topic", "value": "Nutrition", "type": "text" },
+            { "key": "language", "value": "en", "type": "text" },
+            { "key": "notes", "value": "Essential nutrition details during early pregnancy.", "type": "text" },
+            { "key": "audio_file", "type": "file", "src": "" },
+            { "key": "image_file", "type": "file", "src": "" }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/contents/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "contents", ""]
+        }
+      }
+    },
+    {
+      "name": "4. Content - Filter by Topic and Language",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/contents/?topic=Nutrition&language=en",
+          "host": ["{{base_url}}"],
+          "path": ["api", "contents", ""],
+          "query": [
+            { "key": "topic", "value": "Nutrition" },
+            { "key": "language", "value": "en" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "5. Patient - Non-Permitted Delete Refused (403)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{regular_user_token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/patients/1/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "patients", "1", ""]
+        }
+      }
+    },
+    {
+      "name": "6. Patient - Staff Authorized Delete (204)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{staff_user_token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/patients/1/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "patients", "1", ""]
+        }
+      }
+    }
+  ]
+}
