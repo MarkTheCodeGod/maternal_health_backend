@@ -1,47 +1,37 @@
-# Voice Maternal Health CMS and Analytics
+# Maternal Health Educational Content Management System (Backend Prototype)
 
-##  Project Overview
-This project delivers a backend **Content Management System (CMS)** and **analytics framework** for a voice‑based maternal health information platform. It empowers healthcare providers to upload, organize, and deliver multilingual health education materials (text, audio) while tracking user engagement through analytics.
+A robust Django & Django REST Framework backend prototype for managing multilingual, staged maternal health educational content and patient activity auditing.
 
-Developed as a final year project at the University of Zambia, the system addresses barriers of literacy, language diversity, and access to healthcare by enabling **voice‑enabled maternal health education**.
-
----
-
-##  Objectives
-- Develop a CMS for uploading and organizing maternal health content by pregnancy stage, topic, and language.
-- Implement a REST API to serve content to mobile apps or voice engines.
-- Integrate analytics to track content access and user engagement.
-- Build an admin dashboard for content management and visualization.
-- Provide technical documentation and evaluation.
-
----
+## Overview
+This system provides a secure, role-governed REST API and administrative interface for managing maternal health educational resources across trimesters and local languages (e.g., English, Bemba, Nyanja). The architecture preserves administrative activity logs and content independently of patient record lifecycles.
 
 ## Features
-- **JWT Authentication** for secure API access.
-- **Role‑based dashboards** (Admin, Editor, Viewer) with permission‑restricted CRUD views.
-- **Multilingual content support** with audio uploads stored in Django `MEDIA_ROOT`.
-- **REST API endpoints** tested with Postman for seamless integration.
-- **Analytics dashboard** using Chart.js for engagement visualization.
-- **Activity logging** for monitoring usage patterns.
+- **Trimester-Staged & Multilingual Content:** Supports text, audio, and visual health materials linked across translations (`translation_of`).
+- **Role-Based Access Control (RBAC):**
+  - **Admin:** Full CRUD access and administrative deletion.
+  - **Editor:** Create and update content and patient records.
+  - **Viewer:** Strict read-only access (all write requests refused with HTTP 403 Forbidden).
+- **Referential Integrity & Audit Logging:** Deleting a patient retains administrative audit trail rows in `PatientActivityLog` with stable patient identifiers and user/role attribution (`models.SET_NULL`).
+- **Query Filtering:** Case-insensitive filtering on `/api/contents/` by `stage`, `topic`, and `language`.
+- **Automated Verification:** 13 committed Django REST Framework API test cases covering authentication, role permissions, filtering, and audit log persistence.
 
 ---
 
-## Tech Stack
-- **Backend:** Django, Django REST Framework  
-- **Database:** PostgreSQL  
-- **Frontend:** HTML, CSS, JavaScript, Chart.js  
-- **Storage:** Local media folder (with option for cloud storage)  
-- **Testing:** Postman, Django unit tests  
-- **Version Control:** GitHub  
+## Getting Started
 
----
+### 1. Prerequisites
+- Python 3.10+
+- PostgreSQL or SQLite3
 
-## Setup Instructions
-1. Clone the repository:
-   ```bash
-   git clone <repo-url>
-<<<<<<< HEAD
-   cd maternal_health_cms
-=======
-   cd maternal_health_cms
->>>>>>> ac9b7a3 ( implemention of content stage/topic/language/linkage, restrict patient delete, add test suite and Postman collection)
+### 2. Clone and Setup Environment
+```bash
+git clone <repository-url>
+cd maternal_health_cms
+
+# Create and activate virtual environment
+python -m venv venv
+
+# Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+# Linux/macOS:
+source venv/bin/activate

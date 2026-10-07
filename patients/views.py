@@ -101,6 +101,7 @@ def add_patient(request):
         PatientActivityLog.objects.create(
             action='created',
             patient=patient,
+            patient_identifier=f"Patient #{patient.id} ({patient.name})",
             user=request.user,
             role=get_user_role(request.user)
         )
@@ -133,6 +134,7 @@ def update_patient(request, pk):
         PatientActivityLog.objects.create(
             action='updated',
             patient=patient,
+            patient_identifier=f"Patient #{patient.id} ({patient.name})",
             user=request.user,
             role=get_user_role(request.user)
         )
@@ -144,9 +146,11 @@ def update_patient(request, pk):
 def delete_patient(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
     if request.method == 'POST':
+        patient_label = f"Patient #{patient.id} ({patient.name})"
         PatientActivityLog.objects.create(
             action='deleted',
             patient=patient,
+            patient_identifier=patient_label,
             user=request.user,
             role=get_user_role(request.user)
         )
@@ -166,6 +170,7 @@ class PatientListCreateView(generics.ListCreateAPIView):
         PatientActivityLog.objects.create(
             action='created',
             patient=patient,
+            patient_identifier=f"Patient #{patient.id} ({patient.name})",
             user=self.request.user,
             role=get_user_role(self.request.user)
         )
@@ -180,14 +185,17 @@ class PatientRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
         PatientActivityLog.objects.create(
             action='updated',
             patient=patient,
+            patient_identifier=f"Patient #{patient.id} ({patient.name})",
             user=self.request.user,
             role=get_user_role(self.request.user)
         )
 
     def perform_destroy(self, instance):
+        patient_label = f"Patient #{instance.id} ({instance.name})"
         PatientActivityLog.objects.create(
             action='deleted',
             patient=instance,
+            patient_identifier=patient_label,
             user=self.request.user,
             role=get_user_role(self.request.user)
         )

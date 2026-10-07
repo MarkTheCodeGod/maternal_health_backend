@@ -4,6 +4,7 @@ Django settings for core project.
 
 from pathlib import Path
 import os
+import sys
 from dotenv import load_dotenv
 
 # Load environment variables from .env file if present
@@ -12,12 +13,19 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'fallback-secret')
+# App refuses to start if DJANGO_SECRET_KEY is missing (strict security requirement)
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    # Allow test runner to proceed if running under tests, else raise error
+    if 'test' in sys.argv:
+        SECRET_KEY = 'django-insecure-test-key-for-automated-testing-only'
+    else:
+        raise ValueError("CRITICAL SECURITY ERROR: DJANGO_SECRET_KEY environment variable is required and not set!")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() in ('true', '1', 't')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'WINNERMAN']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver', 'WINNERMAN']
 
 
 # Application definition
@@ -64,15 +72,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# Database
+# Database configuration reading dynamically from environment variables
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'maternal_health_cms',
+        'NAME': os.environ.get('DB_NAME', 'maternal_health_cms'),
         'USER': os.environ.get('DB_USER', 'postgres'),
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
@@ -92,7 +100,8 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]
+static_dir = BASE_DIR / "static"
+STATICFILES_DIRS = [static_dir] if static_dir.exists() else []
 
 # Media files (for audio uploads)
 MEDIA_URL = '/media/'

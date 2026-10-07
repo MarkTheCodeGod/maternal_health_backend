@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Patient</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background: #f9f9f9; }
+        .container { max-width: 500px; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 5px solid #dc3545; }
+        button { background: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        a { margin-left: 10px; color: #666; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Confirm Deletion</h2>
+        <p>Are you sure you want to delete patient <strong>{{ patient.name }}</strong> (Age: {{ patient.age }})?</p>
+        <p><em>Note: Activity logs and independent content will be retained.</em></p>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit">Yes, Delete Patient</button>
+            <a href="{% url 'view_patient' %}">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

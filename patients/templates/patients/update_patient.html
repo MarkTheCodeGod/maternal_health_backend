@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Patient</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background: #f9f9f9; }
+        .container { max-width: 600px; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="text"], input[type="number"], textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        a { margin-left: 10px; color: #666; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Update Patient #{{ patient.id }}</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="{{ patient.name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" value="{{ patient.age }}" required>
+            </div>
+            <div class="form-group">
+                <label for="stage">Pregnancy Stage:</label>
+                <input type="text" id="stage" name="stage" value="{{ patient.stage }}">
+            </div>
+            <div class="form-group">
+                <label for="notes">Notes:</label>
+                <textarea id="notes" name="notes" rows="4">{{ patient.notes }}</textarea>
+            </div>
+            <button type="submit">Save Changes</button>
+            <a href="{% url 'view_patient' %}">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>
