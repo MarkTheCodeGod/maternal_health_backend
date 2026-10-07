@@ -1,9 +1,10 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from .models import Patient, Content
+from patient_activity.models import PatientActivityLog
 
 # 1x1 valid GIF byte string to pass image format validation
 TINY_GIF = (
@@ -17,12 +18,34 @@ TINY_GIF = (
 class PatientAPITests(APITestCase):
 
     def setUp(self):
+        # Create groups
+        self.admin_group, _ = Group.objects.get_or_create(name='Admin')
+        self.editor_group, _ = Group.objects.get_or_create(name='Editor')
+        self.viewer_group, _ = Group.objects.get_or_create(name='Viewer')
+
+        # Admin user
         self.staff_user = User.objects.create_user(
             username="admin",
             password="admin123",
             is_staff=True
         )
+        self.staff_user.groups.add(self.admin_group)
 
+        # Editor user
+        self.editor_user = User.objects.create_user(
+            username="editor",
+            password="editor123"
+        )
+        self.editor_user.groups.add(self.editor_group)
+
+        # Viewer user
+        self.viewer_user = User.objects.create_user(
+            username="viewer",
+            password="viewer123"
+        )
+        self.viewer_user.groups.add(self.viewer_group)
+
+        # Normal user without role
         self.normal_user = User.objects.create_user(
             username="user",
             password="user123"
@@ -37,65 +60,114 @@ class PatientAPITests(APITestCase):
 
     def test_anonymous_user_denied(self):
         response = self.client.get("/api/patients/")
-
         self.assertEqual(
             response.status_code,
             status.HTTP_401_UNAUTHORIZED
         )
 
     def test_authenticated_user_can_view_patients(self):
-        self.client.force_authenticate(
-            user=self.normal_user
-        )
-
+        self.client.force_authenticate(user=self.viewer_user)
         response = self.client.get("/api/patients/")
-
         self.assertEqual(
             response.status_code,
             status.HTTP_200_OK
         )
 
+    def test_viewer_cannot_create_patient(self):
+        """Viewer role must receive 403 Forbidden on POST."""
+        self.client.force_authenticate(user=self.viewer_user)
+        payload = {"name": "Jane", "age": 28, "stage": "First Trimester", "notes": "New"}
+        response = self.client.post("/api/patients/", payload)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_viewer_cannot_update_patient(self):
+        """Viewer role must receive 403 Forbidden on PUT/PATCH."""
+        self.client.force_authenticate(user=self.viewer_user)
+        payload = {"name": "Mary Updated", "age": 26, "stage": "Second Trimester", "notes": "Updated"}
+        response = self.client.put(f"/api/patients/{self.patient.id}/", payload)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_editor_can_create_and_update_patient(self):
+        """Editor role can POST and PUT patients."""
+        self.client.force_authenticate(user=self.editor_user)
+        # Create
+        create_payload = {"name": "Sarah", "age": 30, "stage": "First Trimester", "notes": "Editor created"}
+        res_create = self.client.post("/api/patients/", create_payload)
+        self.assertEqual(res_create.status_code, status.HTTP_201_CREATED)
+        new_id = res_create.data['id']
+
+        # Update
+        update_payload = {"name": "Sarah Revised", "age": 31, "stage": "First Trimester", "notes": "Editor updated"}
+        res_update = self.client.put(f"/api/patients/{new_id}/", update_payload)
+        self.assertEqual(res_update.status_code, status.HTTP_200_OK)
+
+    def test_editor_cannot_delete_patient(self):
+        """Editor role must receive 403 Forbidden on DELETE."""
+        self.client.force_authenticate(user=self.editor_user)
+        response = self.client.delete(f"/api/patients/{self.patient.id}/")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_normal_user_cannot_delete_patient(self):
-        self.client.force_authenticate(
-            user=self.normal_user
-        )
-
-        response = self.client.delete(
-            f"/api/patients/{self.patient.id}/"
-        )
-
+        self.client.force_authenticate(user=self.normal_user)
+        response = self.client.delete(f"/api/patients/{self.patient.id}/")
         self.assertEqual(
             response.status_code,
             status.HTTP_403_FORBIDDEN
         )
 
     def test_staff_user_can_delete_patient(self):
-        self.client.force_authenticate(
-            user=self.staff_user
-        )
+        self.client.force_authenticate(user=self.staff_user)
+        response = self.client.delete(f"/api/patients/{self.patient.id}/")
+        self.assertIn(response.status_code, [200, 204])
 
-        response = self.client.delete(
-            f"/api/patients/{self.patient.id}/"
-        )
+    def test_audit_log_records_user_and_role_on_delete(self):
+        """Verify PatientActivityLog records who deleted the patient and their role."""
+        self.client.force_authenticate(user=self.staff_user)
+        self.client.delete(f"/api/patients/{self.patient.id}/")
 
-        self.assertIn(
-            response.status_code,
-            [200, 204]
-        )
+        log = PatientActivityLog.objects.filter(action='deleted').last()
+        self.assertIsNotNone(log)
+        self.assertEqual(log.user, self.staff_user)
+        self.assertEqual(log.role, 'Admin')
 
 
 class ContentAPITests(APITestCase):
 
     def setUp(self):
+        self.editor_group, _ = Group.objects.get_or_create(name='Editor')
+        self.viewer_group, _ = Group.objects.get_or_create(name='Viewer')
+
+        # Editor user for uploading content
         self.user = User.objects.create_user(
             username="contentuser",
             password="password123"
         )
+        self.user.groups.add(self.editor_group)
+
+        # Viewer user
+        self.viewer_user = User.objects.create_user(
+            username="vieweruser",
+            password="password123"
+        )
+        self.viewer_user.groups.add(self.viewer_group)
 
     def test_anonymous_content_request_denied(self):
         """Anonymous access to /api/contents/ must return 401."""
         response = self.client.get("/api/contents/")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_viewer_cannot_upload_content(self):
+        """Viewer role must receive 403 Forbidden when creating content."""
+        self.client.force_authenticate(user=self.viewer_user)
+        payload = {
+            'title': 'Forbidden Guide',
+            'stage': 'First Trimester',
+            'topic': 'Health',
+            'language': 'en',
+            'notes': 'Viewer attempting upload.'
+        }
+        response = self.client.post('/api/contents/', payload)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_content_upload_retrieval_and_filtering(self):
         """Upload content with audio, image, text, stage, topic, and language, and filter."""
