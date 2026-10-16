@@ -1,264 +1,33 @@
-API Latency Benchmark Run (20 iterations per endpoint)
-Date: 2026-10-13 14:48:13
-------------------------------------------------------------
-Endpoint: GET /api/patients/
-  Samples: 20
-  Mean Latency: 5.15 ms
-  Min / Max: 2.48 ms / 18.10 ms
-  Std Dev: 3.94 ms
+============================================================
+Maternal Health CMS - API Latency Measurement Benchmark
+============================================================
 Endpoint: GET /api/contents/
   Samples: 20
-  Mean Latency: 5.46 ms
-  Min / Max: 3.61 ms / 7.33 ms
-  Std Dev: 1.11 ms
+  Mean Latency: 15.16 ms
+  Min / Max: 3.08 ms / 236.09 ms
+  Std Dev: 50.69 ms
+
+Endpoint: GET /api/patients/
+  Samples: 20
+  Mean Latency: 2.51 ms
+  Min / Max: 1.97 ms / 5.38 ms
+  Std Dev: 0.77 ms
+
 Endpoint: GET /api/patient-logs/
   Samples: 20
-  Mean Latency: 16.30 ms
-  Min / Max: 9.11 ms / 23.70 ms
-  Std Dev: 4.33 ms
+  Mean Latency: 11.57 ms
+  Min / Max: 7.66 ms / 22.72 ms
+  Std Dev: 3.84 ms
+
 Endpoint: GET /api/contents/?language=en
   Samples: 20
-  Mean Latency: 11.43 ms
-  Min / Max: 2.98 ms / 25.95 ms
-  Std Dev: 6.22 ms
+  Mean Latency: 2.65 ms
+  Min / Max: 1.93 ms / 4.82 ms
+  Std Dev: 0.67 ms
+
 ============================================================
 OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
-OVERALL ACROSS ALL ENDPOINTS (80 samples):
-  Mean Latency: 9.58 ms
-  Observed Range (Min - Max): 2.48 ms - 25.95 ms
-=
+  Mean Latency: 7.98 ms
+  Observed Range (Min - Max): 1.93 ms - 236.09 ms
+  Standard Deviation: 26.02 ms
+============================================================

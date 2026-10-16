@@ -1,95 +1,105 @@
-"""
-Latency Benchmark Script for Maternal Health CMS API
-Measures response latency across authenticated endpoints and exports statistics.
-"""
 import os
+import sys
 import time
+import math
 import django
-import statistics
 
+# Setup Django environment
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 django.setup()
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from rest_framework.test import APIClient
+from patients.models import Patient, Content
+from patient_activity.models import PatientActivityLog
 
 def run_benchmark():
     print("=" * 60)
     print("Maternal Health CMS - API Latency Measurement Benchmark")
     print("=" * 60)
 
-    # Setup client and test user
+    # Ensure clean test user
+    user, _ = User.objects.get_or_create(username='benchmark_admin', defaults={'is_staff': True})
+    admin_group, _ = Group.objects.get_or_create(name='Admin')
+    user.groups.add(admin_group)
+
+    # Seed baseline records if empty
+    if not Patient.objects.exists():
+        p = Patient.objects.create(name="Benchmark Mother", age=24, stage="First Trimester", notes="Baseline")
+        PatientActivityLog.objects.create(patient=p, patient_identifier=f"Patient #{p.id}: {p.name}", user=user, role="Admin", action="created")
+
+    if not Content.objects.exists():
+        Content.objects.create(title="Benchmark Nutrition", stage="First Trimester", topic="Nutrition", language="en", notes="Folic acid guidance")
+
     client = APIClient()
-    user, _ = User.objects.get_or_create(username='benchmark_user')
-    user.set_password('benchpass123')
-    user.save()
     client.force_authenticate(user=user)
 
     endpoints = [
-        ("GET /api/patients/", "/api/patients/"),
-        ("GET /api/contents/", "/api/contents/"),
-        ("GET /api/patient-logs/", "/api/patient-logs/"),
-        ("GET /api/contents/?language=en", "/api/contents/?language=en"),
+        ('GET', '/api/contents/'),
+        ('GET', '/api/patients/'),
+        ('GET', '/api/patient-logs/'),
+        ('GET', '/api/contents/?language=en'),
     ]
 
-    iterations = 20
-    results_summary = []
-    output_lines = []
+    results_file = os.path.join('docs', 'latency_benchmark.txt')
+    os.makedirs('docs', exist_ok=True)
 
-    header = f"API Latency Benchmark Run ({iterations} iterations per endpoint)\n"
-    header += f"Date: {time.strftime('%Y-%m-%d %H:%M:%S')}\n"
-    header += "-" * 60 + "\n"
-    print(header)
-    output_lines.append(header)
+    lines = []
+    lines.append("=" * 60)
+    lines.append("Maternal Health CMS - API Latency Measurement Benchmark")
+    lines.append("=" * 60)
 
-    all_durations = []
+    all_latencies = []
 
-    for name, url in endpoints:
+    for method, url in endpoints:
         durations = []
-        # Warmup request
-        client.get(url)
-
-        for _ in range(iterations):
-            start = time.perf_counter()
+        # 20 iterations
+        for _ in range(20):
+            t0 = time.perf_counter()
             response = client.get(url)
-            elapsed_ms = (time.perf_counter() - start) * 1000.0
-            durations.append(elapsed_ms)
-            all_durations.append(elapsed_ms)
+            t1 = time.perf_counter()
+            duration_ms = (t1 - t0) * 1000.0
+            durations.append(duration_ms)
+            all_latencies.append(duration_ms)
 
-        mean_ms = statistics.mean(durations)
+        mean_ms = sum(durations) / len(durations)
         min_ms = min(durations)
         max_ms = max(durations)
-        stdev_ms = statistics.stdev(durations) if len(durations) > 1 else 0.0
+        variance = sum((x - mean_ms) ** 2 for x in durations) / len(durations)
+        std_dev_ms = math.sqrt(variance)
 
-        summary = (
-            f"Endpoint: {name}\n"
-            f"  Samples: {iterations}\n"
+        endpoint_summary = (
+            f"Endpoint: {method} {url}\n"
+            f"  Samples: {len(durations)}\n"
             f"  Mean Latency: {mean_ms:.2f} ms\n"
             f"  Min / Max: {min_ms:.2f} ms / {max_ms:.2f} ms\n"
-            f"  Std Dev: {stdev_ms:.2f} ms\n"
+            f"  Std Dev: {std_dev_ms:.2f} ms\n"
         )
-        print(summary)
-        output_lines.append(summary)
+        print(endpoint_summary)
+        lines.append(endpoint_summary)
 
-    overall_mean = statistics.mean(all_durations)
-    overall_min = min(all_durations)
-    overall_max = max(all_durations)
-    overall_summary = (
-        "=" * 60 + "\n"
-        f"OVERALL ACROSS ALL ENDPOINTS ({len(all_durations)} samples):\n"
+    overall_mean = sum(all_latencies) / len(all_latencies)
+    overall_min = min(all_latencies)
+    overall_max = max(all_latencies)
+    overall_variance = sum((x - overall_mean) ** 2 for x in all_latencies) / len(all_latencies)
+    overall_std_dev = math.sqrt(overall_variance)
+
+    separator = "=" * 60
+    summary_block = (
+        f"{separator}\n"
+        f"OVERALL ACROSS ALL ENDPOINTS ({len(all_latencies)} samples):\n"
         f"  Mean Latency: {overall_mean:.2f} ms\n"
         f"  Observed Range (Min - Max): {overall_min:.2f} ms - {overall_max:.2f} ms\n"
-        "=" * 60 + "\n"
+        f"  Standard Deviation: {overall_std_dev:.2f} ms\n"
+        f"{separator}\n"
     )
-    print(overall_summary)
-    output_lines.append(overall_summary)
+    print(summary_block)
+    lines.append(summary_block)
 
-    # Save to docs/latency_benchmark.txt
-    os.makedirs('docs', exist_ok=True)
-    with open('docs/latency_benchmark.txt', 'w', encoding='utf-8') as f:
-        f.writelines(output_lines)
+    with open(results_file, 'w', encoding='utf-8') as f:
+        f.write("\n".join(lines))
 
-    print("Results successfully saved to docs/latency_benchmark.txt!")
+    print(f"Results successfully saved to {results_file}!")
 
 if __name__ == '__main__':
     run_benchmark()

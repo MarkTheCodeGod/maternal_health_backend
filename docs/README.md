@@ -1,43 +1,15 @@
-# Voice Maternal Health CMS and Analytics
+# Voice Maternal Health CMS and Backend API
 
-##  Project Overview
-This project delivers a backend **Content Management System (CMS)** and **analytics framework** for a voice‑based maternal health information platform. It empowers healthcare providers to upload, organize, and deliver multilingual health education materials (text, audio) while tracking user engagement through analytics.
+A secure, decoupled Content Management System (CMS) and REST API framework for voice-oriented maternal health education and patient tracking in low-resource environments.
 
-Developed as a final year project at the University of Zambia, the system addresses barriers of literacy, language diversity, and access to healthcare by enabling **voice‑enabled maternal health education**.
+## System Features
+- **Trimester-Staged Content Management:** Organizes guidance by clinical gestational stages (First Trimester, Second Trimester, Third Trimester, Postnatal), health topics, and languages in text, MP3 audio, and anatomical image formats.
+- **Multilingual Translation Linkage:** Self-referencing foreign key (`translation_of`) links vernacular translations directly to base clinical guidance.
+- **Role-Based Access Control (RBAC):** Group permissions populated upon migration (`Admin` 16, `Editor` 12, `Viewer` 4 permissions), enforced via custom DRF permission classes (`PatientPermission` and `ContentPermission`).
+- **Non-Destructive Audit Logging:** Synchronous audit trail in `PatientActivityLog` capturing actor (`user`), executing `role`, action, and persistent `patient_identifier`, retained upon deletion via `models.SET_NULL`.
+- **Stateless JWT Authentication:** SimpleJWT token verification protecting clinical endpoints.
 
----
-
-##  Objectives
-- Develop a CMS for uploading and organizing maternal health content by pregnancy stage, topic, and language.
-- Implement a REST API to serve content to mobile apps or voice engines.
-- Integrate analytics to track content access and user engagement.
-- Build an admin dashboard for content management and visualization.
-- Provide technical documentation and evaluation.
-
----
-
-## Features
-- **JWT Authentication** for secure API access.
-- **Role‑based dashboards** (Admin, Editor, Viewer) with permission‑restricted CRUD views.
-- **Multilingual content support** with audio uploads stored in Django `MEDIA_ROOT`.
-- **REST API endpoints** tested with Postman for seamless integration.
-- **Analytics dashboard** using Chart.js for engagement visualization.
-- **Activity logging** for monitoring usage patterns.
-
----
-
-## Tech Stack
-- **Backend:** Django, Django REST Framework  
-- **Database:** PostgreSQL  
-- **Frontend:** HTML, CSS, JavaScript, Chart.js  
-- **Storage:** Local media folder (with option for cloud storage)  
-- **Testing:** Postman, Django unit tests  
-- **Version Control:** GitHub  
-
----
-
-## Setup Instructions
-1. Clone the repository:
-   ```bash
-   git clone <repo-url>
-   cd maternal_health_cms
+## Verification & Automated Testing
+The system contains an automated test suite of 13 regression tests across two test classes:
+```bash
+python manage.py test
